@@ -14,7 +14,7 @@ export default function Featured() {
             Everything you need for self-development
           </p>
           <p className="pt-3 leading-7">
-            With Zemo You can elevate your life to next level
+            With Zemo You can elevate your life to next level.
             <br />
             It comes with sophisticated features to keep your goal on top.
             <br />
