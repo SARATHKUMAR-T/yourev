@@ -44,9 +44,9 @@ const features = [
 export default function Hero() {
   return (
     <Container>
-      <div className="min-h-screen pt-16  grid  md:grid-cols-2">
-        <div className="space-y-4">
-          <p className="text-start   pt-16 text-7xl font-normal capitalize">
+      <div className="min-h-screen pt-16  grid grid-rows-2 md:grid-rows-1  md:grid-cols-2">
+        <div className="space-y-4 px-4 ">
+          <p className="text-start pt-6  sm:pt-16 text-7xl font-normal capitalize">
             make yourself,
             <br />
             <span className="text-end">a best version</span>
@@ -58,9 +58,14 @@ export default function Hero() {
             Make a streak,follow and conqurer it.
           </p>
 
-          <Button className="capitalize w-2/5 h-11 rounded-sm flex justify-around ">
-            <Link href="/signup">Lets start a journey</Link>
-            <ChevronRightIcon />
+          <Button
+            asChild
+            className="capitalize w-1/2 md:w-3/5 h-11 rounded-sm flex justify-around "
+          >
+            <Link href="/signup">
+              Lets start a journey
+              <ChevronRightIcon />
+            </Link>
           </Button>
           <div className="w-full flex justify-start   h-2/5 relative">
             <Image priority src="/assets/explorer.svg" alt="hero" fill />

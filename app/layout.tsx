@@ -1,10 +1,9 @@
 "use client";
-import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, Lato, Montserrat } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-
+import { Montserrat } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const mont = Montserrat({
   subsets: ["latin"],
 });
@@ -14,6 +13,8 @@ export const metadata: Metadata = {
   description: "self development app",
 };
 
+const queryClient = new QueryClient();
+
 export default function RootLayout({
   children,
 }: {
@@ -22,10 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${mont.className} relative`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
+        <QueryClientProvider client={queryClient}>
           {children}
-        </ThemeProvider>
+          <Toaster />
+        </QueryClientProvider>
       </body>
     </html>
   );

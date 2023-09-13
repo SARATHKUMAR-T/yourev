@@ -2,11 +2,12 @@ import React from "react";
 import { Button } from "./ui/button";
 import { Quote } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Featured() {
   return (
-    <section className="mt-16 bg-yellow-400 h-[70vh]  flex items-center justify-center">
-      <div className="flex flex-col sm:flex-row max-w-6xl w-full mx-auto py-12 ">
+    <section className="mt-16 bg-yellow-400 min-h-[70vh]  flex items-center justify-center">
+      <div className="flex flex-col space-y-8 sm:flex-row max-w-6xl w-full mx-auto py-12 ">
         <div className="flex-1 dark:text-black border-r-2 border-dashed space-y-1 border-gray-600 px-4">
           <p>All in one</p>
           <p className="text-6xl font-medium">ZEMO</p>
@@ -21,8 +22,8 @@ export default function Featured() {
             Join with rare community that focus on self development.
           </p>
           <div className="pt-6">
-            <Button className="w-28" variant="destructive">
-              TRY ZEMO
+            <Button className="w-28" asChild variant="destructive">
+              <Link href="/signup">TRY ZEMO</Link>
             </Button>
           </div>
         </div>
@@ -30,19 +31,23 @@ export default function Featured() {
           <div className="h-12 w-12 rounded-full bg-slate-900 p-3">
             <Quote className="text-white" />
           </div>
-          <p className="capitalize mt-6 max-w-sm mx-auto">
+          <p className="capitalize dark:text-black mt-6 max-w-sm mx-auto">
             Is Self development is your main focus
             <br />
-            then ZEMO is the thing you only need.
+            then ZEMO is the only thing that you need.
           </p>
-          <div className="mt-4 flex ">
+          <div className="mt-8 pl-3 flex gap-4 items-center ">
             <Image
-              src="/public/zenmo.jpg"
-              height={24}
-              width={24}
+              src="/assets/zenmo.jpg"
+              height={70}
+              width={70}
               alt="zenmo"
-              className="rounded-full"
+              className="rounded-full shadow-lg shadow-blue-400"
             />
+            <div className="dark:text-black">
+              <p className="text-lg font-medium">Michael</p>
+              <p className="text-sm">Software Developer</p>
+            </div>
           </div>
         </div>
       </div>

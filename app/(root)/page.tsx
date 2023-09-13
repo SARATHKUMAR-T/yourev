@@ -1,13 +1,17 @@
-import Container from "@/components/Container";
+import About from "@/components/About";
 import Featured from "@/components/Featured";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import Image from "next/image";
 
 export default function Home() {
   return (
     <>
+      <Header />
       <Hero />
       <Featured />
+      <About />
+      <Footer />
     </>
   );
 }

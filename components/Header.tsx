@@ -1,32 +1,28 @@
 "use client";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Menu, Moon, ShoppingCart, Sun } from "lucide-react";
-import Container from "./Container";
 import { Button } from "./ui/button";
-
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ProfileButton from "./ui/ProfileButton";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const user = false;
-  const { theme, setTheme } = useTheme();
+  const [authenticated, isAuthenticated] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+    function getToken() {
+      const token = localStorage.getItem("token");
+      token ? isAuthenticated(true) : isAuthenticated(false);
+    }
+    getToken();
+  }, [authenticated]);
+
   const routes = [
     {
       href: "/",
-      label: "HomePage",
+      label: "Home",
     },
     {
       href: "/#about",
@@ -37,9 +33,19 @@ export default function Header() {
       label: "Contact",
     },
   ];
+  const routes2 = [
+    {
+      href: "/dashboard",
+      label: "Dashboard",
+    },
+    {
+      href: "/streaker",
+      label: "Streaker",
+    },
+  ];
 
   return (
-    <header className="fixed z-50 w-full sm:flex sm:justify-between  px-4 border-b">
+    <header className="fixed bg-inherit z-50 w-full sm:flex sm:justify-between  px-4 border-b">
       <div className="relative px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between w-full">
         <div className="flex items-center">
           <Sheet>
@@ -48,36 +54,65 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <nav className="flex flex-col gap-4">
-                {routes.map((route, i) => (
-                  <Link
-                    key={i}
-                    href={route.href}
-                    className="block px-2 py-1 text-lg"
-                  >
-                    {route.label}
-                  </Link>
-                ))}
+                {!authenticated
+                  ? routes.map((route, i) => (
+                      <Link
+                        key={i}
+                        href={route.href}
+                        className="block px-2 py-1 text-lg"
+                      >
+                        {route.label}
+                      </Link>
+                    ))
+                  : routes2.map((route, i) => (
+                      <Link
+                        key={i}
+                        href={route.href}
+                        className="block px-2 py-1 text-lg"
+                      >
+                        {route.label}
+                      </Link>
+                    ))}
               </nav>
             </SheetContent>
           </Sheet>
-          <Link href="/" className="ml-4 lg:ml-0">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              localStorage.removeItem("token"),
+                isAuthenticated(false),
+                router.push("/");
+            }}
+            className="ml-4 lg:ml-0"
+          >
             <h1 className="text-xl font-semibold">ZEMO</h1>
-          </Link>
+          </Button>
         </div>
         <nav className="mx-6  items-center space-x-4 lg:space-x-6 hidden  md:flex">
-          {routes.map((route, i) => (
-            <Button asChild key={i} variant="ghost">
-              <Link
-                href={route.href}
-                className="text-sm font-medium transition-colors"
-              >
-                {route.label}
-              </Link>
-            </Button>
-          ))}
+          {!authenticated
+            ? routes.map((route, i) => (
+                <Button asChild key={i} variant="ghost">
+                  <Link
+                    href={route.href}
+                    className="text-sm font-medium transition-colors"
+                  >
+                    {route.label}
+                  </Link>
+                </Button>
+              ))
+            : routes2.map((route, i) => (
+                <Button asChild key={i} variant="ghost">
+                  <Link
+                    href={route.href}
+                    className="text-sm font-medium transition-colors"
+                  >
+                    {route.label}
+                  </Link>
+                </Button>
+              ))}
         </nav>
         <div className="flex items-center">
-          <Button
+          {/* <Button
             variant="ghost"
             size="icon"
             aria-label="Toggle Theme"
@@ -87,12 +122,12 @@ export default function Header() {
             <Sun className="h-6 w-6 rotate-0 scale-100 duration-500 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-6 w-6 rotate-90 scale-0 duration-500 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle Theme</span>
-          </Button>
-          {user ? (
+          </Button> */}
+          {authenticated ? (
             <ProfileButton />
           ) : (
-            <Button>
-              <Link href="/login">Login</Link>
+            <Button asChild>
+              <Link href="/signin">SignIn</Link>
             </Button>
           )}
         </div>

@@ -1,3 +1,4 @@
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,24 +8,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "./button";
+import { useRouter } from "next/navigation";
+import { User2Icon, UserCircle } from "lucide-react";
 
 const ProfileButton = () => {
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src="/img/shadcn.jpg" />
-          <AvatarFallback>CN</AvatarFallback>
+          <UserCircle />
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">Billing</DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">Subscription</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">Log Out</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
+          Subscription
+        </DropdownMenuItem>
+        <DropdownMenuSeparator /> */}
+        <DropdownMenuItem className="cursor-pointer">
+          <Button
+            onClick={() => {
+              localStorage.removeItem("token"), router.push("/");
+            }}
+          >
+            Log Out
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
