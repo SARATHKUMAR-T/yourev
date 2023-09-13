@@ -1,13 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getProviders, signIn, useSession } from "next-auth/react";
 
 import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,12 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeftCircle, Loader2 } from "lucide-react";
-import { toast, useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { ReloadIcon } from "@radix-ui/react-icons";
 
 const formSchema = z.object({
   email: z.string().email({

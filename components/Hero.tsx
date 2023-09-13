@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   PackagePlus,
   TrendingUp,
-  UserCheck2,
   UserCog2,
 } from "lucide-react";
 import Container from "./Container";
