@@ -1,4 +1,4 @@
-"use client";
+import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeftCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router"; // Changed to 'next/router'
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -45,35 +45,47 @@ export default function Signup() {
   });
 
   const { mutate, isLoading } = useMutation(
-    values => axios.post("https://zemo-backend.vercel.app/api/signup", values),
+    async values => {
+      try {
+        const response = await axios.post(
+          "https://zemo-backend.vercel.app/api/signup",
+          values
+        );
+        return response.data;
+      } catch (error) {
+        throw error; // Re-throw the error to be handled in onError
+      }
+    },
     {
       onSuccess: data => {
         toast({
           title: "New User Created Successfully!",
         });
-        const token = data.data.token;
+        const token = (data as { token: string }).token;
         localStorage.setItem("token", token);
         form.reset();
         router.push("/dashboard");
       },
-      onError: error => {
-        if (error.response && error.response.status === 400) {
+      onError: (error: unknown) => {
+        if (error instanceof AxiosError && error.response?.status === 400) {
           toast({
             title: "User Already Exists",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Sigup  failed!",
+            title: "Signup Failed!",
             variant: "destructive",
           });
         }
       },
     }
   );
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate(values);
+    await mutate(values);
   }
+
   return (
     <section className="min-h-screen flex flex-col w-full items-center justify-center  p-4 px-8">
       <Button className="flex gap-x-2 mb-8" asChild variant="secondary">

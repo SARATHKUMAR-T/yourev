@@ -18,7 +18,7 @@ import { ChevronLeftCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -41,24 +41,33 @@ export default function Signin() {
   });
 
   const { mutate, isLoading } = useMutation(
-    values => axios.post("https://zemo-backend.vercel.app/api/signin", values),
+    async values => {
+      const response = await axios.post(
+        "https://zemo-backend.vercel.app/api/signin",
+        values
+      );
+      return response.data;
+    },
     {
-      onSuccess: data => {
+      onSuccess: (data: any) => {
         toast({
           title: "User Signed In Successfully!",
         });
-        const token = data.data.token;
+        const token = (data as { token: string }).token;
         localStorage.setItem("token", token);
         form.reset();
         router.push("/dashboard");
       },
-      onError: error => {
-        if (error.response && error.response.status === 500) {
+      onError: (error: unknown) => {
+        if (error instanceof AxiosError && error.response?.status === 500) {
           toast({
             title: "User Not Found!",
             description: "Please Create An Account And Continue",
           });
-        } else if (error.response && error.response.status === 400) {
+        } else if (
+          error instanceof AxiosError &&
+          error.response?.status === 400
+        ) {
           toast({
             title: "Invalid Credentials!",
             variant: "destructive",
