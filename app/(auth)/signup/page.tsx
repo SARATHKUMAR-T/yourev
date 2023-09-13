@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeftCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/router"; // Changed to 'next/router'
+import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
