@@ -48,7 +48,7 @@ export default function StreakForm({
 
   const { mutate, isLoading } = useMutation(
     data =>
-      axios.post("http://localhost:9000/api/addstreak", data, {
+      axios.post("https://zemo-backend.vercel.app/api/addstreak", data, {
         headers: {
           "x-auth-token": token,
         },

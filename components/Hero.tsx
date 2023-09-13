@@ -55,7 +55,7 @@ export default function Hero() {
           <p className="text-xl">
             Let experience a new version of you with our help.
             <br />
-            Make a streak,follow and conqurer it.
+            Make a streak,follow and conquer it.
           </p>
 
           <Button

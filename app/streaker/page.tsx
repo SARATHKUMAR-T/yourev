@@ -3,14 +3,23 @@ import Header from "@/components/Header";
 import StreakForm from "@/components/StreakForm";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { PlusCircleIcon } from "lucide-react";
+import { PlusCircle, PlusCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getStreaks } from "@/lib/services/streaks";
-import axios from "axios";
 import StreakCard from "@/components/StreakCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export default function Streaker() {
+  const router = useRouter();
+  useEffect(
+    function token() {
+      if (!localStorage.getItem("token")) {
+        router.push("/");
+      }
+    },
+    [router]
+  );
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
@@ -28,12 +37,6 @@ export default function Streaker() {
         </div>
       ) : (
         <div className="pt-16 min-h-screen w-full ">
-          {isLoading && (
-            <>
-              <Skeleton className="flex justify-end px-12 py-8" />
-              <Skeleton className="max-w-2xl px-6  pb-6 flex flex-col gap-6 w-full  mx-auto" />
-            </>
-          )}
           <div className="flex justify-end px-12 py-8">
             <Button
               variant="default"
@@ -46,13 +49,26 @@ export default function Streaker() {
             </Button>
           </div>
           <div className="max-w-2xl px-6  pb-6 flex flex-col gap-6 w-full  mx-auto">
-            {streaks ? (
+            {isLoading && (
+              <>
+                <Skeleton className="max-w-2xl mx-auto px-6 pb-6 w-full h-40 bg-gray-200">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                </Skeleton>
+              </>
+            )}
+            {streaks &&
               streaks.map(streak => (
                 <StreakCard key={streak._id} streak={streak} />
-              ))
-            ) : (
-              <p>Please add some streaks</p>
-            )}
+              ))}
+            {streaks?.length === 0 ||
+              (!streaks && (
+                <div>
+                  <p>
+                    <PlusCircle />
+                    <span>Please Add Some Streaks To Continue</span>
+                  </p>
+                </div>
+              ))}
           </div>
         </div>
       )}

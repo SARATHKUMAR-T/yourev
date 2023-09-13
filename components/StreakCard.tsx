@@ -31,11 +31,10 @@ export default function StreakCard({ streak }: { streak: any }) {
   const queryClient = useQueryClient();
   const [durationcal, setDurationcal] = useState({});
   const { toast } = useToast();
-
   useEffect(() => {
     async function duration(streak: any) {
       if (streak.isstarted) {
-        const duro = await calculateTimeDifference(streak.startdate);
+        const duro = calculateTimeDifference(streak.startdate);
         setDurationcal(duro);
       }
     }
@@ -46,8 +45,8 @@ export default function StreakCard({ streak }: { streak: any }) {
   const { isLoading, mutate } = useMutation(
     id =>
       axios.patch(
-        `http://localhost:9000/api/streaks/start/${id}`,
-        {},
+        `https://zemo-backend.vercel.app/api/streaks/start/${id}`,
+        { startdate: new Date().toLocaleString() },
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -75,7 +74,7 @@ export default function StreakCard({ streak }: { streak: any }) {
   // delete functionality
   const handleDelete = async (id: string) => {
     const response = await fetch(
-      `http://localhost:9000/api/streak/delete/${id}`,
+      `https://zemo-backend.vercel.app/api/streak/delete/${id}`,
       {
         method: "DELETE",
         headers: {

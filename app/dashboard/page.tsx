@@ -5,9 +5,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getStreaks } from "@/lib/services/streaks";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, PenSquare, Swords } from "lucide-react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 export default function Dashboard() {
+  const router = useRouter();
+  useEffect(
+    function token() {
+      if (!localStorage.getItem("token")) {
+        router.push("/");
+      }
+    },
+    [router]
+  );
+
   const { data, isLoading } = useQuery({
     queryKey: ["streaks"],
     queryFn: getStreaks,

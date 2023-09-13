@@ -1,3 +1,4 @@
+"use client";
 import {
   formatDistanceToNow,
   parse,
@@ -9,7 +10,7 @@ import {
 export function calculateTimeDifference(beginningDateString) {
   const beginningDate = parse(
     beginningDateString,
-    "dd/MM/yyyy, h:mm:ss aa",
+    "MM/dd/yyyy, h:mm:ss aa",
     new Date()
   );
   const currentTime = new Date();
@@ -26,8 +27,3 @@ export function calculateTimeDifference(beginningDateString) {
     years,
   };
 }
-
-// Example usage:
-const beginningDateString = "9/12/2023, 4:32:23 pm";
-const timeDifference = calculateTimeDifference(beginningDateString);
-console.log(timeDifference);

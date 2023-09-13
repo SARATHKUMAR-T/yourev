@@ -46,7 +46,7 @@ export default function Signup() {
   });
 
   const { mutate, isLoading } = useMutation(
-    values => axios.post("http://localhost:9000/api/signup", values),
+    values => axios.post("https://zemo-backend.vercel.app/api/signup", values),
     {
       onSuccess: data => {
         toast({
