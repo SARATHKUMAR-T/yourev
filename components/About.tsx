@@ -35,7 +35,7 @@ export default function About() {
       className="min-h-screen px-6 py-4 pb-16 bg-[url('/assets/space.jpg')] bg-center bg-cover "
     >
       <h1 className="mt-24 text-3xl text-center text-white "> About Us</h1>
-      <div className="max-w-4xl space-y-8 rounded-md mt-6  mx-auto p-8  ">
+      <div className="max-w-4xl space-y-8 rounded-md mt-6  mx-auto py-8  ">
         {about.map(about => (
           <AboutCard key={about.title} about={about} />
         ))}

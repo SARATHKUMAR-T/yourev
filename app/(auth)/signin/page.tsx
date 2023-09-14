@@ -14,7 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeftCircle, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  ChevronLeftCircle,
+  IceCream,
+  Loader2,
+} from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -31,6 +36,7 @@ const formSchema = z.object({
 export default function Signin() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -179,6 +185,34 @@ export default function Signin() {
             </Button>
           </form>
         </Form>
+        <div className="mt-4 p-3">
+          <Button
+            onClick={() => setDemoOpen(!demoOpen)}
+            variant="ghost"
+            className="text-sm"
+          >
+            <AlertCircle className="h-4 w-4 mr-2 bg-yellow-500 rounded-full" />{" "}
+            Are You Looking For Demo Account?
+          </Button>
+          {demoOpen && (
+            <div className="mt-1 space-y-2 px-4  text-sm">
+              <p>
+                Email :
+                <span className="underline underline-offset-2 decoration-yellow-500">
+                  {" "}
+                  jhon@gmail.com
+                </span>
+              </p>
+              <p>
+                Password :
+                <span className="underline underline-offset-2 decoration-yellow-500">
+                  {" "}
+                  demo123
+                </span>
+              </p>
+            </div>
+          )}
+        </div>
         <Button className="mt-4 " variant="link">
           <Link href="/signup" className="underline">
             Don&apos;t Have An Account?

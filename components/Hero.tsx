@@ -21,7 +21,7 @@ const features = [
   {
     icon: <TrendingUp className="w-8 h-8" />,
     title: "Tracker",
-    des: "create a streak you need to follow",
+    des: "Keep Track Of Every Streaks You Created",
   },
   {
     icon: <ClipboardCheck className="w-8 h-8" />,

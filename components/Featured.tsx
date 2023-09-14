@@ -34,7 +34,7 @@ export default function Featured() {
           <p className="capitalize dark:text-black mt-6 max-w-sm mx-auto">
             Is Self development is your main focus
             <br />
-            then ZEMO is the only thing that you need.
+            then ZEMO is the only thing that you need!.
           </p>
           <div className="mt-8 pl-3 flex gap-4 items-center ">
             <Image
