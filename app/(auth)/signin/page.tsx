@@ -17,8 +17,7 @@ import Link from "next/link";
 import { ChevronLeftCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,6 +30,7 @@ const formSchema = z.object({
 
 export default function Signin() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,51 +40,94 @@ export default function Signin() {
     },
   });
 
-  const { mutate, isLoading } = useMutation(
-    async values => {
-      const response = await axios.post(
-        "https://zemo-backend.vercel.app/api/signin",
-        values
-      );
-      return response.data;
-    },
-    {
-      onSuccess: (data: any) => {
-        toast({
-          title: "User Signed In Successfully!",
-        });
-        const token = (data as { token: string }).token;
-        localStorage.setItem("token", token);
-        form.reset();
-        router.push("/dashboard");
-      },
-      onError: (error: unknown) => {
-        if (error instanceof AxiosError && error.response?.status === 500) {
-          toast({
-            title: "User Not Found!",
-            description: "Please Create An Account And Continue",
-          });
-        } else if (
-          error instanceof AxiosError &&
-          error.response?.status === 400
-        ) {
-          toast({
-            title: "Invalid Credentials!",
-            variant: "destructive",
-            description: "Try Again with Correct Credentials",
-          });
-        } else {
-          toast({
-            title: "Unknown Error!",
-            description: "Please Try Again Later",
-            variant: "destructive",
-          });
-        }
-      },
-    }
-  );
+  // const { mutate, isLoading } = useMutation(
+  //   async values => {
+  //     const response = await axios.post(
+  //       "https://zemo-backend.vercel.app/api/signin",
+  //       values
+  //     );
+  //     return response.data;
+  //   },
+  //   {
+  //     onSuccess: (data: any) => {
+  //       toast({
+  //         title: "User Signed In Successfully!",
+  //       });
+  //       const token = (data as { token: string }).token;
+  //       localStorage.setItem("token", token);
+  //       form.reset();
+  //       router.push("/dashboard");
+  //     },
+  //     onError: (error: unknown) => {
+  //       if (error instanceof AxiosError && error.response?.status === 500) {
+  //         toast({
+  //           title: "User Not Found!",
+  //           description: "Please Create An Account And Continue",
+  //         });
+  //       } else if (
+  //         error instanceof AxiosError &&
+  //         error.response?.status === 400
+  //       ) {
+  //         toast({
+  //           title: "Invalid Credentials!",
+  //           variant: "destructive",
+  //           description: "Try Again with Correct Credentials",
+  //         });
+  //       } else {
+  //         toast({
+  //           title: "Unknown Error!",
+  //           description: "Please Try Again Later",
+  //           variant: "destructive",
+  //         });
+  //       }
+  //     },
+  //   }
+  // );
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate(values);
+    setIsLoading(true);
+    const res = await fetch("https://zemo-backend.vercel.app/api/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const data = await res.json();
+    console.log(data);
+    if (data.message) {
+      if (data.message === "user doesn't exist") {
+        setIsLoading(false);
+        toast({
+          title: "User Not Found!",
+          variant: "destructive",
+          description: "Please Create An Account And Continue",
+        });
+      } else if (data.message === "Invalid Credentials") {
+        setIsLoading(false);
+        toast({
+          title: "Invalid Credentials!",
+          variant: "destructive",
+          description: "Try Again with Correct Credentials",
+        });
+      } else {
+        setIsLoading(false);
+        toast({
+          title: "Unknown Error!",
+          description: "Please Try Again Later",
+          variant: "destructive",
+        });
+      }
+    }
+    if (data.token) {
+      setIsLoading(false);
+      toast({
+        title: "User Signed In Successfully!",
+      });
+      const token = (data as { token: string }).token;
+      localStorage.setItem("token", token);
+      form.reset();
+      router.push("/dashboard");
+    }
   }
   return (
     <section className="min-h-screen flex flex-col w-full items-center justify-center p-4 px-8">

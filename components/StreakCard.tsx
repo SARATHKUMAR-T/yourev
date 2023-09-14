@@ -27,12 +27,33 @@ import { calculateTimeDifference } from "@/utils/timecalculator";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-export default function StreakCard({ streak }: { streak: any }) {
+interface Streak {
+  _id: string;
+  streakname: string;
+  description: string;
+  maxdays: number;
+  isstarted: boolean;
+  startdate: string;
+}
+interface DurationData {
+  days: number;
+  duration: string;
+  months: number;
+  years: number;
+}
+
+export default function StreakCard({ streak }: { streak: Streak }) {
   const queryClient = useQueryClient();
-  const [durationcal, setDurationcal] = useState({});
+  const [durationcal, setDurationcal] = useState<DurationData>({
+    days: 0,
+    duration: "",
+    months: 0,
+    years: 0,
+  });
   const { toast } = useToast();
+
   useEffect(() => {
-    async function duration(streak: any) {
+    async function duration(streak: Streak) {
       if (streak.isstarted) {
         const duro = calculateTimeDifference(streak.startdate);
         setDurationcal(duro);
@@ -41,9 +62,18 @@ export default function StreakCard({ streak }: { streak: any }) {
     duration(streak);
   }, [streak]);
 
-  // streak start function
-  const { isLoading, mutate } = useMutation(
-    id =>
+  const token = localStorage.getItem("token");
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["x-auth-token"] = token;
+  }
+
+  // Streak start function
+  const { isLoading, mutate } = useMutation<void, Error, string>(
+    async id =>
       axios.patch(
         `https://zemo-backend.vercel.app/api/streaks/start/${id}`,
         { startdate: new Date().toLocaleString() },
@@ -58,7 +88,7 @@ export default function StreakCard({ streak }: { streak: any }) {
         queryClient.invalidateQueries();
         toast({
           title: "Streak Started Successfully",
-          description: "Here You Go🚀 ",
+          description: "Here You Go🚀",
           duration: 5000,
         });
       },
@@ -71,26 +101,31 @@ export default function StreakCard({ streak }: { streak: any }) {
     }
   );
 
-  // delete functionality
+  // Delete functionality
   const handleDelete = async (id: string) => {
     const response = await fetch(
       `https://zemo-backend.vercel.app/api/streak/delete/${id}`,
       {
         method: "DELETE",
-        headers: {
-          "content-Type": "appliication/json",
-          "x-auth-token": localStorage.getItem("token"),
-        },
+        headers,
       }
     );
-    if (response.ok && response.status === 200) {
+    const result = await response.json();
+    if (result.message === "Streak Deleted Successfully!") {
+      queryClient.invalidateQueries();
       toast({
-        title: "Deleted successfully",
+        title: result.message,
+        description: "Don't forget to comeback again!",
+        duration: 3000,
       });
-      queryClient.invalidateQueries({ queryKey: ["streaks"] });
+    } else if (result.message === "error occured") {
+      toast({
+        title: result.message,
+        variant: "destructive",
+      });
     } else {
       toast({
-        title: "Deletion failed",
+        title: result.message,
         variant: "destructive",
       });
     }
@@ -107,7 +142,7 @@ export default function StreakCard({ streak }: { streak: any }) {
             <>
               <span className="capitalize mb-2">{streak.description}</span>
               <br />
-              <span className="text-lg font-medium">{`Target:${streak.maxdays}Days`}</span>
+              <span className="text-lg font-medium">{`Target:${streak.maxdays} Days`}</span>
             </>
           </CardDescription>
           <div>
@@ -150,12 +185,12 @@ export default function StreakCard({ streak }: { streak: any }) {
         <CardFooter>
           {streak.isstarted && durationcal.days < 10 && (
             <p className="text-sm font-semibold">
-              {`Started: ${durationcal.duration}`}{" "}
+              {`Started: ${durationcal.duration}`}
             </p>
           )}
           {streak.isstarted && durationcal.days > 1 && (
             <p>
-              Days Completed: <span>${streak.maxdays - durationcal.days}</span>
+              Days Completed: <span>{streak.maxdays - durationcal.days}</span>
             </p>
           )}
         </CardFooter>

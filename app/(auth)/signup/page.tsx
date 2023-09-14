@@ -1,4 +1,5 @@
-import { AxiosError } from "axios";
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -16,8 +17,7 @@ import Link from "next/link";
 import { ChevronLeftCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import { useState } from "react";
 
 const formSchema = z.object({
   username: z.string().min(4, {
@@ -34,6 +34,7 @@ const formSchema = z.object({
 export default function Signup() {
   const router = useRouter();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,46 +45,75 @@ export default function Signup() {
     },
   });
 
-  const { mutate, isLoading } = useMutation(
-    async values => {
-      try {
-        const response = await axios.post(
-          "https://zemo-backend.vercel.app/api/signup",
-          values
-        );
-        return response.data;
-      } catch (error) {
-        throw error; // Re-throw the error to be handled in onError
-      }
-    },
-    {
-      onSuccess: data => {
-        toast({
-          title: "New User Created Successfully!",
-        });
-        const token = (data as { token: string }).token;
-        localStorage.setItem("token", token);
-        form.reset();
-        router.push("/dashboard");
-      },
-      onError: (error: unknown) => {
-        if (error instanceof AxiosError && error.response?.status === 400) {
-          toast({
-            title: "User Already Exists",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Signup Failed!",
-            variant: "destructive",
-          });
-        }
-      },
-    }
-  );
+  // const { mutate, isLoading } = useMutation(
+  //   async values => {
+  //     try {
+  //       const response = await axios.post(
+  //         "https://zemo-backend.vercel.app/api/signup",
+  //         values
+  //       );
+  //       return response.data;
+  //     } catch (error) {
+  //       throw error; // Re-throw the error to be handled in onError
+  //     }
+  //   },
+  //   {
+  //     onSuccess: data => {
+  //       toast({
+  //         title: "New User Created Successfully!",
+  //       });
+  //       const token = (data as { token: string }).token;
+  //       localStorage.setItem("token", token);
+  //       form.reset();
+  //       router.push("/dashboard");
+  //     },
+  //     onError: (error: unknown) => {
+  //       if (error instanceof AxiosError && error.response?.status === 400) {
+  //         toast({
+  //           title: "User Already Exists",
+  //           variant: "destructive",
+  //         });
+  //       } else {
+  //         toast({
+  //           title: "Signup Failed!",
+  //           variant: "destructive",
+  //         });
+  //       }
+  //     },
+  //   }
+  // );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await mutate(values);
+    // mutate(values);
+
+    const res = await fetch("https://zemo-backend.vercel.app/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const data = await res.json();
+    if (data.message === "use exisits") {
+      toast({
+        title: "User Already Exists!",
+        variant: "destructive",
+      });
+    } else if (data.message === "internal server error") {
+      toast({
+        title: "Unknow Error!",
+        description: "Please Try Again",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "New User Created Successfully!",
+      });
+      const token = (data as { token: string }).token;
+      localStorage.setItem("token", token);
+      form.reset();
+      router.push("/dashboard");
+    }
   }
 
   return (

@@ -19,6 +19,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
 
 const formSchema = z.object({
   streakname: z.string(),
@@ -33,46 +34,82 @@ export default function StreakForm({
   setIsFormOpen: any;
   isFormOpen: boolean;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const router = useRouter();
   const { toast } = useToast();
   const token = localStorage.getItem("token");
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["x-auth-token"] = token;
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
 
-    defaultValues: {},
+    defaultValues: {
+      streakname: "",
+      maxdays: "",
+      description: "",
+    },
   });
 
-  const { mutate, isLoading } = useMutation(
-    data =>
-      axios.post("https://zemo-backend.vercel.app/api/addstreak", data, {
-        headers: {
-          "x-auth-token": token,
-        },
-      }),
-    {
-      onSuccess: data => {
-        toast({
-          title: data.data.message,
-        });
-        queryClient.invalidateQueries({ queryKey: ["streaks"] });
-        setIsFormOpen(false);
-      },
-      onError: error => {
-        toast({ title: "Error" });
-      },
-    }
-  );
+  // const { mutate, isLoading } = useMutation(
+  //   data =>
+  //     axios.post("https://zemo-backend.vercel.app/api/addstreak", data, {
+  //       headers: {
+  //         "x-auth-token": token,
+  //       },
+  //     }),
+  //   {
+  //     onSuccess: data => {
+  //       toast({
+  //         title: data.data.message,
+  //       });
+  //       queryClient.invalidateQueries({ queryKey: ["streaks"] });
+  //       setIsFormOpen(false);
+  //     },
+  //     onError: error => {
+  //       toast({ title: "Error" });
+  //     },
+  //   }
+  // );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     const daysCount = parseInt(values.maxdays);
     const data = {
       ...values,
       maxdays: daysCount,
     };
-    mutate(data);
+
+    const res = await fetch(`https://zemo-backend.vercel.app/api/addstreak`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers,
+    });
+    const result = await res.json();
+    if (result.message === "New Streak Created Successfully!") {
+      setIsLoading(false);
+      toast({
+        title: result.message,
+        description: "Here You Go🚀",
+        duration: 5000,
+      });
+      queryClient.invalidateQueries({ queryKey: ["streaks"] });
+      setIsFormOpen(false);
+    } else {
+      setIsLoading(false);
+      toast({
+        title: result.message,
+        description: "Try Again🚀",
+        duration: 3000,
+      });
+    }
   }
   return (
     <div className="max-w-lg bg-slate-100 dark:bg-slate-900 rounded-md px-8 pb-12 pt-8 w-2/4 relative">
