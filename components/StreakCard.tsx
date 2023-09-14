@@ -145,7 +145,7 @@ export default function StreakCard({ streak }: { streak: Streak }) {
               <span className="text-lg font-medium">{`Target:${streak.maxdays} Days`}</span>
             </>
           </CardDescription>
-          <div>
+          <div className="flex flex-col gap-y-3 justify-center sm:flex-row gap-x-3 ">
             {!streak.isstarted && (
               <Button
                 disabled={isLoading}
@@ -183,13 +183,13 @@ export default function StreakCard({ streak }: { streak: Streak }) {
           </div>
         </CardContent>
         <CardFooter>
-          {streak.isstarted && durationcal.days < 10 && (
-            <p className="text-sm font-semibold">
+          {streak.isstarted && durationcal.days < 1 && (
+            <p className="text-sm text-green-700 font-semibold">
               {`Started: ${durationcal.duration}`}
             </p>
           )}
           {streak.isstarted && durationcal.days > 1 && (
-            <p>
+            <p className="text-sm text-green-700 font-semibold">
               Days Completed: <span>{streak.maxdays - durationcal.days}</span>
             </p>
           )}
