@@ -68,16 +68,17 @@ export default function Dashboard() {
   return (
     <section className="bg-white">
       <Header />
-      {isLoading && (
+      {isLoading ? (
         <>
           <Skeleton className="max-w-3xl bg-gray-300  mx-auto  px-8 min-h-[50vh] py-16" />
         </>
+      ) : (
+        <div className="max-w-3xl flex flex-col mx-auto  px-8 min-h-screen py-16">
+          {cards.map(card => (
+            <DashboardCard key={card.title} card={card} />
+          ))}
+        </div>
       )}
-      <div className="max-w-3xl flex flex-col mx-auto  px-8 min-h-screen py-16">
-        {cards.map(card => (
-          <DashboardCard key={card.title} card={card} />
-        ))}
-      </div>
     </section>
   );
 }
