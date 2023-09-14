@@ -121,6 +121,7 @@ export default function Signin() {
       setIsLoading(false);
       toast({
         title: "User Signed In Successfully!",
+        duration: 2000,
       });
       const token = (data as { token: string }).token;
       localStorage.setItem("token", token);

@@ -60,7 +60,7 @@ export default function Streaker() {
           </div>
           <div className="max-w-2xl px-6 pb-6 flex flex-col gap-6 w-full mx-auto">
             {isLoading && (
-              <Skeleton className="max-w-2xl mx-auto px-6 pb-6 w-full h-40 bg-gray-200">
+              <Skeleton className="max-w-2xl mx-auto pt-8 px-6 pb-6 w-full h-40 bg-gray-300">
                 <Skeleton className="h-12 w-12 rounded-full" />
               </Skeleton>
             )}
@@ -68,15 +68,22 @@ export default function Streaker() {
               streaks.map(streak => (
                 <StreakCard key={streak._id} streak={streak} />
               ))}
-            {streaks?.length === 0 ||
-              (!streaks && (
-                <div className="flex w-full items-center justify-center">
-                  <p>
-                    <PlusCircle />
-                    <span>Please Add Some Streaks To Continue</span>
-                  </p>
-                </div>
-              ))}
+            {streaks?.length === 0 && (
+              <div className="flex gap-4 w-full items-center justify-center">
+                <Button
+                  className="rounded-full"
+                  size="icon"
+                  onClick={() => setIsFormOpen(!isFormOpen)}
+                >
+                  <PlusCircle />
+                </Button>
+                <p>
+                  <span className="underline underline-offset-2 decoration-yellow-500 ">
+                    Please Add Some Streaks To Continue
+                  </span>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

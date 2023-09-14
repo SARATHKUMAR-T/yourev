@@ -70,7 +70,7 @@ export default function Dashboard() {
       <Header />
       {isLoading && (
         <>
-          <Skeleton className="max-w-3xl flex flex-col mx-auto  px-8 min-h-screen py-16" />
+          <Skeleton className="max-w-3xl bg-gray-300  mx-auto  px-8 min-h-[50vh] py-16" />
         </>
       )}
       <div className="max-w-3xl flex flex-col mx-auto  px-8 min-h-screen py-16">
