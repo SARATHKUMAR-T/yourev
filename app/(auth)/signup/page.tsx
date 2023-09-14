@@ -84,7 +84,7 @@ export default function Signup() {
   // );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // mutate(values);
+    setIsLoading(true);
 
     const res = await fetch("https://zemo-backend.vercel.app/api/signup", {
       method: "POST",
@@ -94,11 +94,17 @@ export default function Signup() {
       body: JSON.stringify(values),
     });
     const data = await res.json();
-    if (data.message === "use exisits") {
+    if (data.message === "User Already Exists!") {
       toast({
         title: "User Already Exists!",
+        description: "Redirecting To Signin Page...",
         variant: "destructive",
+        duration: 3000,
       });
+      setIsLoading(false);
+      setTimeout(() => {
+        router.push("/signin");
+      }, 3000);
     } else if (data.message === "internal server error") {
       toast({
         title: "Unknow Error!",
@@ -111,6 +117,7 @@ export default function Signup() {
       });
       const token = (data as { token: string }).token;
       localStorage.setItem("token", token);
+      setIsLoading(false);
       form.reset();
       router.push("/dashboard");
     }
