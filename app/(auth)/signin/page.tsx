@@ -93,7 +93,6 @@ export default function Signin() {
       body: JSON.stringify(values),
     });
     const data = await res.json();
-    console.log(data);
     if (data.message) {
       if (data.message === "user doesn't exist") {
         setIsLoading(false);

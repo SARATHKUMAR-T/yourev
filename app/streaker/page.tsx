@@ -70,7 +70,7 @@ export default function Streaker() {
               ))}
             {streaks?.length === 0 ||
               (!streaks && (
-                <div>
+                <div className="flex w-full items-center justify-center">
                   <p>
                     <PlusCircle />
                     <span>Please Add Some Streaks To Continue</span>
