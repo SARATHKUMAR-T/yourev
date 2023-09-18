@@ -124,15 +124,15 @@ export default function Signin() {
       }
     }
     if (data.token) {
-      setIsLoading(false);
       toast({
         title: "User Signed In Successfully!",
         duration: 2000,
       });
       const token = (data as { token: string }).token;
       localStorage.setItem("token", token);
-      form.reset();
       router.push("/dashboard");
+      setIsLoading(false);
+      form.reset();
     }
   }
   return (
@@ -167,7 +167,7 @@ export default function Signin() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="...." {...field} />
+                    <Input type="password" placeholder="...." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -45,44 +45,6 @@ export default function Signup() {
     },
   });
 
-  // const { mutate, isLoading } = useMutation(
-  //   async values => {
-  //     try {
-  //       const response = await axios.post(
-  //         "https://zemo-backend.vercel.app/api/signup",
-  //         values
-  //       );
-  //       return response.data;
-  //     } catch (error) {
-  //       throw error; // Re-throw the error to be handled in onError
-  //     }
-  //   },
-  //   {
-  //     onSuccess: data => {
-  //       toast({
-  //         title: "New User Created Successfully!",
-  //       });
-  //       const token = (data as { token: string }).token;
-  //       localStorage.setItem("token", token);
-  //       form.reset();
-  //       router.push("/dashboard");
-  //     },
-  //     onError: (error: unknown) => {
-  //       if (error instanceof AxiosError && error.response?.status === 400) {
-  //         toast({
-  //           title: "User Already Exists",
-  //           variant: "destructive",
-  //         });
-  //       } else {
-  //         toast({
-  //           title: "Signup Failed!",
-  //           variant: "destructive",
-  //         });
-  //       }
-  //     },
-  //   }
-  // );
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
@@ -117,9 +79,9 @@ export default function Signup() {
       });
       const token = (data as { token: string }).token;
       localStorage.setItem("token", token);
+      router.push("/dashboard");
       setIsLoading(false);
       form.reset();
-      router.push("/dashboard");
     }
   }
 
@@ -155,7 +117,11 @@ export default function Signup() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="jhon@email.com" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="jhon@email.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
