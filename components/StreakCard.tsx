@@ -190,7 +190,7 @@ export default function StreakCard({ streak }: { streak: Streak }) {
           )}
           {streak.isstarted && durationcal.days > 1 && (
             <p className="text-sm text-green-700 font-semibold">
-              Days Completed: <span>{streak.maxdays - durationcal.days}</span>
+              Days Completed: <span>{durationcal.days}</span>
             </p>
           )}
         </CardFooter>
