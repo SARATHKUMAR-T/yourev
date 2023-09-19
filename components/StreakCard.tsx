@@ -44,6 +44,7 @@ interface DurationData {
 
 export default function StreakCard({ streak }: { streak: Streak }) {
   const queryClient = useQueryClient();
+  const [iscompleted, setIscompleted] = useState<boolean>(false);
   const [durationcal, setDurationcal] = useState<DurationData>({
     days: 0,
     duration: "",
@@ -61,6 +62,20 @@ export default function StreakCard({ streak }: { streak: Streak }) {
     }
     duration(streak);
   }, [streak]);
+
+  // completion checkup
+  // useEffect(() => {
+  //   async function calculateCompletion(
+  //     streak: Streak,
+  //     durationcal: DurationData
+  //   ) {
+  //     if (durationcal.days === streak.maxdays) {
+
+  //       setIscompleted(true);
+  //     }
+  //   }
+  //   calculateCompletion(streak, durationcal);
+  // }, [streak, durationcal]);
 
   const token = localStorage.getItem("token");
   const headers: HeadersInit = {
