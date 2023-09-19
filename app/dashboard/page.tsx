@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   const cards = [
     {
-      title: "No Of Streaks Created",
+      title: "Number Of Streaks Created",
       icon: <PenSquare className="h-8 w-8 " />,
       count: streaks?.length,
       style: {
@@ -54,7 +54,7 @@ export default function Dashboard() {
       },
     },
     {
-      title: "No Of Streaks Completed",
+      title: "Number Of Streaks Completed",
       icon: <CheckCircle2 className="h-8 w-8 " />,
       count: completedStreaks?.length,
       style: {
